@@ -9,6 +9,7 @@ typedef struct {
   SDL_Texture *texture;
   int width;
   int height;
+  int atlasX, atlasY;
   float posX, posY;
   float size;
 } Sprite;

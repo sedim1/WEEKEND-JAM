@@ -2,16 +2,19 @@
 #include "Global.h"
 #include "RenderWindow.h"
 #include "SDL3/SDL_render.h"
+#include "SDL3/SDL_surface.h"
 #include "SDL3_image/SDL_image.h"
 #include <stdio.h>
 
 Sprite NewSprite(RenderWindow *window, const char *path, int w, int h) {
-  Sprite sprite = {NULL, w, h, 0.0, 0.0, 1};
+  Sprite sprite = {NULL, w, h, 0, 0, 0.0, 0.0, 1};
   sprite.texture = IMG_LoadTexture(window->renderer, path);
   if (sprite.texture == NULL)
     printf("ERROR::Could not load %s\n", path);
-  else
+  else {
     printf("Texture %s was succesfully loaded\n", path);
+    SDL_SetTextureScaleMode(sprite.texture, SDL_SCALEMODE_NEAREST);
+  }
   return sprite;
 }
 void FreeSprite(Sprite *sprite) {
@@ -28,7 +31,9 @@ void DrawCoverSprite(RenderWindow *window, Sprite *sprite) {
 }
 
 void DrawSprite(RenderWindow *window, Sprite *sprite) {
-  SDL_FRect src = {0, 0, (float)sprite->width, (float)sprite->height};
+  SDL_FRect src = {(int)sprite->width * sprite->atlasX,
+                   (int)sprite->height * sprite->atlasY, (float)sprite->width,
+                   (float)sprite->height};
   SDL_FRect dest = {sprite->posX, sprite->posY,
                     (float)sprite->width * sprite->size * SPRITE_SCALE,
                     (float)sprite->height * sprite->size * SPRITE_SCALE};

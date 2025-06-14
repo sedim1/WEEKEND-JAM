@@ -3,6 +3,8 @@
 
 #define SCREEN_WIDTH 254 * 4
 #define SCREEN_HEIGHT 224 * 4
-#define SPRITE_SCALE 1.0f
+#define SPRITE_SCALE 4.0f
+
+float Lerp(float from, float to, float t);
 
 #endif
