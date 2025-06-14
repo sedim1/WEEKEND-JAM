@@ -13,3 +13,15 @@ Se repetira este bucle hasta que se acabe el tiempo
 
 MVP, un juego en donde limpias zapatos en una cantidad de tiempo limpiador
 
+
+
+#Cosas que hacer hoy:
+- Hacer sprites de mugre
+- Hacer Sprites de brilloso
+- H
+- Sprites de jabon
+- Sprite de contenedor de humectante
+- Hacer Sprite de Zapatos (mismo dibujo pero diferentes colores)
+- Codificar el comportamiento del jabon , de la mugre y el humectante
+
+

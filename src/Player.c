@@ -7,7 +7,7 @@ float followSpeed = 40.0f;
 
 void StartPlayer(RenderWindow *Window) {
   player = NewSprite(Window, "Assets/Textures/Hand.png", 33, 58);
-  player.atlasX = 1;
+  player.atlasX = 0;
 }
 
 void FollowMouse(float posX, float posY, float dt) {
