@@ -1,1 +1,15 @@
-Notas del Juego
+Notas del Juego - Shiny Shoes
+
+# MECANICA DE Juego
+Lavar zapatos de cuero hasta dejarlos brillantes y limpios;
+
+#Etapas del jugador
+  -limpieza adecuada (Limpiar el zapato, donde primero se le rociara a la brocha con el limpiador)
+    - Habra una especies de mugre que se tendra que quitar (Se quitara rapido o lento dependiendo de la potencia del limpiador)
+  -Secar el jabon que dejo el limpiador y la brocha (la durabilidad variara dependiendo la velocidad en la que agita el mouse)
+  -Aplicar humectante para dejarlo brilloso
+
+Se repetira este bucle hasta que se acabe el tiempo
+
+MVP, un juego en donde limpias zapatos en una cantidad de tiempo limpiador
+

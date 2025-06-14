@@ -4,6 +4,7 @@
 #include "SDL3/SDL_events.h"
 #include "SDL3/SDL_init.h"
 #include "SDL3/SDL_keycode.h"
+#include "Sprite.h"
 #include <stdio.h>
 
 int Init();
@@ -14,6 +15,7 @@ void Display();
 
 RenderWindow Window;
 int isRunning = 1;
+Sprite test;
 
 int main(int argc, char *argv[]) {
 
@@ -33,10 +35,12 @@ int Init() {
   Window = CreateWindow("Game", SCREEN_WIDTH, SCREEN_HEIGHT);
   if (Window.window == NULL || Window.renderer == NULL)
     isRunning = 0;
+  test = NewSprite(&Window, "Assets/Textures/test.png", 3000, 2000);
   return 1;
 }
 
 void End() {
+  FreeSprite(&test);
   SDL_Quit();
   printf("Exiting SDL app\n");
 }
@@ -52,6 +56,7 @@ void GameLoop() {
 void Display() {
   ClearWindow(&Window);
   // Logica de renderizado
+  DrawCoverSprite(&Window, &test);
   DisplayWindow(&Window);
 }
 
