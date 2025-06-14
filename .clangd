@@ -1,0 +1,6 @@
+CompileFlags:
+  Add:
+    - -I/home/sedim/Projects/WEEKEND_JAM/include
+    - -I/home/sedim/Projects/WEEKEND_JAM/src
+    - -I/home/sedim/Projects/WEEKEND_JAM/lib
+
