@@ -109,15 +109,15 @@ void getWashed(CircleCollider *mouseCollider, float speed, Cleanables *c,
                float dt) {
   for (int i = 0; i < c->nCleanables; i++) {
     CircleCollider circle = {
-        c->dirt[i].posX + 64.0f,
-        c->dirt[i].posY + 56.0f,
-        64,
+        c->dirt[i].posX + 64.0f * c->dirt[i].size,
+        c->dirt[i].posY + 56.0f * c->dirt[i].size,
+        64 * c->dirt[i].size,
     };
 
     CircleCollider circle2 = {
-        (c->spume[i].posX + 64.0f),
-        (c->spume[i].posY + 56.0f),
-        64,
+        (c->spume[i].posX + 64.0f * c->spume[i].size),
+        (c->spume[i].posY + 56.0f * c->spume[i].size),
+        64 * c->spume[i].size,
     };
 
     // printf("%d\n", CircleToCircleCollision(mouseCollider, &circle));
@@ -143,9 +143,9 @@ void getCleaned(CircleCollider *mouseCollider, float speed, Cleanables *c,
   for (int i = 0; i < c->nCleanables; i++) {
 
     CircleCollider circle = {
-        (c->spume[i].posX + 64.0f),
-        (c->spume[i].posY + 56.0f),
-        64,
+        (c->spume[i].posX + 64.0f * c->spume[i].size),
+        (c->spume[i].posY + 56.0f * c->spume[i].size),
+        64 * c->spume[i].size,
     };
     if (CircleToCircleCollision(mouseCollider, &circle)) {
       c->spume[i].size -= 1.5f * dt;
