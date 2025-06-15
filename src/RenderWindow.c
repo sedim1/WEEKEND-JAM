@@ -16,7 +16,7 @@ RenderWindow CreateWindow(const char *title, int w, int h) {
 }
 
 void ClearWindow(RenderWindow *Window) {
-  SDL_SetRenderDrawColor(Window->renderer, 0, 0, 0, 255);
+  SDL_SetRenderDrawColor(Window->renderer, 100, 151, 177, 255);
   SDL_RenderClear(Window->renderer);
 }
 

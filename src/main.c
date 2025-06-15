@@ -1,13 +1,18 @@
+#include "Cleanable.h"
 #include "Global.h"
 #include "Mouse.h"
+#include "Plates.h"
 #include "Player.h"
 #include "RenderWindow.h"
 #include "SDL3/SDL_error.h"
 #include "SDL3/SDL_events.h"
 #include "SDL3/SDL_init.h"
 #include "SDL3/SDL_keycode.h"
+#include "SDL3/SDL_mouse.h"
 #include "SDL3/SDL_timer.h"
+#include "Sprite.h"
 #include <stdio.h>
+#include <time.h>
 
 int Init();
 void End();
@@ -20,6 +25,10 @@ RenderWindow Window;
 int isRunning = 1;
 
 Mouse mouse;
+float lastRelX = 0.0f;
+float lastRelY = 0.0f;
+Plate plate;
+Cleanables c;
 
 int main(int argc, char *argv[]) {
 
@@ -31,6 +40,7 @@ int main(int argc, char *argv[]) {
 }
 
 int Init() {
+  srand(time(NULL));
   if (!SDL_Init(SDL_INIT_VIDEO)) {
     printf("ERROR::Could Not Init SDL:: %s\n", SDL_GetError());
     return 0;
@@ -39,11 +49,16 @@ int Init() {
   Window = CreateWindow("Game", SCREEN_WIDTH, SCREEN_HEIGHT);
   if (Window.window == NULL || Window.renderer == NULL)
     isRunning = 0;
+  plate = NewPlate(&Window);
+  c = clenables(&Window);
   StartPlayer(&Window);
+  ResetCleanable(&c);
   return 1;
 }
 
 void End() {
+  EndCleanables(&c);
+  FreeSprite(&plate.sprite);
   EndPlayer();
   SDL_Quit();
   printf("Exiting SDL app\n");
@@ -62,11 +77,15 @@ void GameLoop() {
   }
 }
 
-void Update(float dt) { FollowMouse(mouse.posX, mouse.posY, dt); }
+void Update(float dt) {
+  FollowMouse(mouse.posX, mouse.posY, dt);
+  PlateUpdate(&plate, &c, &mouse, dt);
+}
 
 void Display() {
   ClearWindow(&Window);
   // Logica de renderizado
+  DrawPlate(&Window, &plate, &c);
   DrawPlayer(&Window);
   DisplayWindow(&Window);
 }
@@ -87,8 +106,25 @@ void ProcessEvents() {
       mouse.posY = e.motion.y;
       mouse.relX = e.motion.xrel;
       mouse.relY = e.motion.yrel;
+      if (mouse.relX == lastRelX && mouse.relY == lastRelY) {
+        mouse.relX = 0.0f;
+        mouse.relY = 0.0f;
+      } else {
+        lastRelX = mouse.relX;
+        lastRelY = mouse.relY;
+      }
+      break;
+    case SDL_EVENT_MOUSE_BUTTON_DOWN:
+      if (e.button.button == SDL_BUTTON_LEFT)
+        mouse.isPressed = 1;
+      break;
+    case SDL_EVENT_MOUSE_BUTTON_UP:
+      if (e.button.button == SDL_BUTTON_LEFT)
+        mouse.isPressed = 0;
       break;
     default:
+      mouse.relX = 0.0f;
+      mouse.relY = 0.0f;
       break;
     }
   }

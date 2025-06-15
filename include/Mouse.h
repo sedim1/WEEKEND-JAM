@@ -4,6 +4,7 @@
 typedef struct {
   float posX, posY;
   float relX, relY;
+  int isPressed;
 } Mouse;
 
 #endif // !define MOUSE_H
