@@ -1,6 +1,7 @@
 #include "Cleanable.h"
 #include "Global.h"
 #include "Mouse.h"
+#include "Number.h"
 #include "Plates.h"
 #include "Player.h"
 #include "RenderWindow.h"
@@ -15,11 +16,18 @@
 #include <time.h>
 
 int Init();
+void InitGame();
 void End();
 void GameLoop();
 void Update(float dt);
 void ProcessEvents();
 void Display();
+
+enum GameState {
+  MAIN_MENU,
+  PLAYING,
+  RESULT_SCREEN,
+};
 
 RenderWindow Window;
 int isRunning = 1;
@@ -29,6 +37,10 @@ float lastRelX = 0.0f;
 float lastRelY = 0.0f;
 Plate plate;
 Cleanables c;
+Sprite Background;
+TEXT_NUMBER countdown;
+TEXT_NUMBER cleanedPlates;
+enum GameState gameState = RESULT_SCREEN;
 
 int main(int argc, char *argv[]) {
 
@@ -51,12 +63,19 @@ int Init() {
     isRunning = 0;
   plate = NewPlate(&Window);
   c = clenables(&Window);
+  Background = NewSprite(&Window, "Assets/Textures/Background.png", 128, 112);
+  countdown = textNumber(&Window);
+  cleanedPlates = textNumber(&Window);
+  countdown.value = 134;
   StartPlayer(&Window);
   ResetCleanable(&c);
   return 1;
 }
 
 void End() {
+  FreeSprite(&Background);
+  FreeSprite(&cleanedPlates.texture);
+  FreeSprite(&countdown.texture);
   EndCleanables(&c);
   FreeSprite(&plate.sprite);
   EndPlayer();
@@ -78,15 +97,29 @@ void GameLoop() {
 }
 
 void Update(float dt) {
-  FollowMouse(mouse.posX, mouse.posY, dt);
-  PlateUpdate(&plate, &c, &mouse, dt);
+  if (gameState == MAIN_MENU) {
+  }
+  if (gameState == PLAYING) {
+    FollowMouse(mouse.posX, mouse.posY, dt);
+    PlateUpdate(&plate, &c, &mouse, dt);
+  } else if (gameState == RESULT_SCREEN) {
+  }
 }
 
 void Display() {
   ClearWindow(&Window);
+  DrawCoverSprite(&Window, &Background);
   // Logica de renderizado
-  DrawPlate(&Window, &plate, &c);
-  DrawPlayer(&Window);
+
+  if (gameState == MAIN_MENU) {
+  } else if (gameState == PLAYING) {
+    DrawPlate(&Window, &plate, &c);
+    DrawPlayer(&Window);
+    DrawTextNumber(&Window, &countdown, 0.0f, 0.0f);
+  } else if (gameState == RESULT_SCREEN) {
+    DrawTextNumber(&Window, &cleanedPlates, 0.0f, 0.0f);
+  }
+
   DisplayWindow(&Window);
 }
 
@@ -129,3 +162,5 @@ void ProcessEvents() {
     }
   }
 }
+
+void InitGame() {}

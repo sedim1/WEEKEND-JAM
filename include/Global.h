@@ -15,4 +15,7 @@ int RandomNumberInRange(int min, int max);
 
 int farEnough(float x1, float y1, float x2, float y2, float minDist);
 
+int CountDigits(int n);
+int GetDigit(int n, int index);
+
 #endif

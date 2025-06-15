@@ -69,7 +69,6 @@ void AssignRandomPositions(Cleanables *c) {
 }
 
 void ResetCleanable(Cleanables *c) {
-  c->nCleanables = 5;
   for (int i = 0; i < c->nCleanables; i++) {
     c->dirt[i].size = 1;
     c->d[i] = IS_ON;
@@ -111,24 +110,24 @@ void getWashed(CircleCollider *mouseCollider, float speed, Cleanables *c,
     CircleCollider circle = {
         c->dirt[i].posX + 64.0f * c->dirt[i].size,
         c->dirt[i].posY + 56.0f * c->dirt[i].size,
-        64 * c->dirt[i].size,
+        64,
     };
 
     CircleCollider circle2 = {
         (c->spume[i].posX + 64.0f * c->spume[i].size),
         (c->spume[i].posY + 56.0f * c->spume[i].size),
-        64 * c->spume[i].size,
+        64,
     };
 
     // printf("%d\n", CircleToCircleCollision(mouseCollider, &circle));
-    if (CircleToCircleCollision(mouseCollider, &circle)) {
+    if (CircleToCircleCollision(mouseCollider, &circle) && speed >= 2.0f) {
       c->dirt[i].size -= 1.5f * dt;
       if (c->dirt[i].size <= 0.2f) {
         c->dirt[i].size = 0.0f;
         c->d[i] = IS_OFF;
       }
     }
-    if (CircleToCircleCollision(mouseCollider, &circle2)) {
+    if (CircleToCircleCollision(mouseCollider, &circle2) && speed >= 2.0f) {
       c->spume[i].size += 1.5f * dt;
       if (c->spume[i].size >= 0.8f) {
         c->spume[i].size = 1.0f;
@@ -145,9 +144,9 @@ void getCleaned(CircleCollider *mouseCollider, float speed, Cleanables *c,
     CircleCollider circle = {
         (c->spume[i].posX + 64.0f * c->spume[i].size),
         (c->spume[i].posY + 56.0f * c->spume[i].size),
-        64 * c->spume[i].size,
+        64,
     };
-    if (CircleToCircleCollision(mouseCollider, &circle)) {
+    if (CircleToCircleCollision(mouseCollider, &circle) && speed >= 2.0f) {
       c->spume[i].size -= 1.5f * dt;
       if (c->spume[i].size <= 0.2f) {
         c->spume[i].size = 0.0f;
