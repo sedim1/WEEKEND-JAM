@@ -121,14 +121,14 @@ void getWashed(CircleCollider *mouseCollider, float speed, Cleanables *c,
 
     // printf("%d\n", CircleToCircleCollision(mouseCollider, &circle));
     if (CircleToCircleCollision(mouseCollider, &circle) && speed >= 2.0f) {
-      c->dirt[i].size -= 1.5f * dt;
+      c->dirt[i].size -= 2.0f * dt;
       if (c->dirt[i].size <= 0.2f) {
         c->dirt[i].size = 0.0f;
         c->d[i] = IS_OFF;
       }
     }
     if (CircleToCircleCollision(mouseCollider, &circle2) && speed >= 2.0f) {
-      c->spume[i].size += 1.5f * dt;
+      c->spume[i].size += 2.0f * dt;
       if (c->spume[i].size >= 0.8f) {
         c->spume[i].size = 1.0f;
         c->s[i] = IS_ON;
@@ -147,7 +147,7 @@ void getCleaned(CircleCollider *mouseCollider, float speed, Cleanables *c,
         64,
     };
     if (CircleToCircleCollision(mouseCollider, &circle) && speed >= 2.0f) {
-      c->spume[i].size -= 1.5f * dt;
+      c->spume[i].size -= 2.0f * dt;
       if (c->spume[i].size <= 0.2f) {
         c->spume[i].size = 0.0f;
         c->s[i] = IS_OFF;

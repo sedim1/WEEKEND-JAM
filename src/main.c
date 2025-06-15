@@ -25,6 +25,7 @@ void Display();
 
 enum GameState {
   MAIN_MENU,
+  PREPARING,
   PLAYING,
   RESULT_SCREEN,
 };
@@ -38,9 +39,19 @@ float lastRelY = 0.0f;
 Plate plate;
 Cleanables c;
 Sprite Background;
+Sprite Background2;
+Sprite Background3;
 TEXT_NUMBER countdown;
 TEXT_NUMBER cleanedPlates;
-enum GameState gameState = RESULT_SCREEN;
+Sprite CleanedText;
+enum GameState gameState = MAIN_MENU;
+extern Player player;
+
+float timerCurrentTime = 0.0f;
+float timerLastTime = 0.0f;
+int timerFinished = 0;
+
+int gameStart = 0;
 
 int main(int argc, char *argv[]) {
 
@@ -64,9 +75,15 @@ int Init() {
   plate = NewPlate(&Window);
   c = clenables(&Window);
   Background = NewSprite(&Window, "Assets/Textures/Background.png", 128, 112);
+  Background2 =
+      NewSprite(&Window, "Assets/Textures/BackgroundMain.png", 128, 112);
+  Background3 =
+      NewSprite(&Window, "Assets/Textures/BackgroundMain2.png", 128, 112);
   countdown = textNumber(&Window);
+  CleanedText = NewSprite(&Window, "Assets/Textures/Cleaned.png", 126, 64);
   cleanedPlates = textNumber(&Window);
-  countdown.value = 134;
+  CleanedText.posX = SCREEN_WIDTH / 4.0f - 150.0f;
+  CleanedText.posY = SCREEN_HEIGHT / 2.0f - 100.0f;
   StartPlayer(&Window);
   ResetCleanable(&c);
   return 1;
@@ -74,6 +91,9 @@ int Init() {
 
 void End() {
   FreeSprite(&Background);
+  FreeSprite(&Background2);
+  FreeSprite(&Background3);
+  FreeSprite(&CleanedText);
   FreeSprite(&cleanedPlates.texture);
   FreeSprite(&countdown.texture);
   EndCleanables(&c);
@@ -98,26 +118,74 @@ void GameLoop() {
 
 void Update(float dt) {
   if (gameState == MAIN_MENU) {
+    // printf("MAIN MENU\n");
+    if (gameStart) {
+      timerLastTime = (float)SDL_GetTicks() / 1000.0f;
+      gameState = PREPARING;
+    }
+  }
+  if (gameState == PREPARING) {
+    timerCurrentTime = (float)SDL_GetTicks() / 1000.0f;
+    if (timerCurrentTime - timerLastTime >= 5.0f) {
+      InitGame();
+      gameState = PLAYING;
+    }
   }
   if (gameState == PLAYING) {
-    FollowMouse(mouse.posX, mouse.posY, dt);
-    PlateUpdate(&plate, &c, &mouse, dt);
+    // printf("PLAYING\n");
+
+    if (plate.state == WASHING)
+      player.atlasX = 1;
+    else
+      player.atlasX = 0;
+    timerCurrentTime = (float)SDL_GetTicks() / 1000.0f;
+
+    if (!timerFinished) {
+
+      if (timerCurrentTime - timerLastTime >= 1.0f) {
+        countdown.value -= 1;
+
+        timerLastTime = timerCurrentTime;
+        if (countdown.value <= 0)
+          timerFinished = 1;
+      }
+      FollowMouse(mouse.posX, mouse.posY, dt);
+      PlateUpdate(&plate, &c, &mouse, &cleanedPlates.value, dt);
+    } else {
+      if (timerCurrentTime - timerLastTime >= 5.0f) {
+        gameState = RESULT_SCREEN;
+        timerLastTime = timerCurrentTime;
+      }
+    }
+
   } else if (gameState == RESULT_SCREEN) {
+    timerCurrentTime = (float)SDL_GetTicks() / 1000.0f;
+    if (timerCurrentTime - timerLastTime >= 5.0f) {
+      gameState = MAIN_MENU;
+      timerLastTime = timerCurrentTime;
+      gameStart = 0;
+    }
   }
 }
 
 void Display() {
   ClearWindow(&Window);
-  DrawCoverSprite(&Window, &Background);
   // Logica de renderizado
 
   if (gameState == MAIN_MENU) {
+    DrawCoverSprite(&Window, &Background2);
+  } else if (gameState == PREPARING) {
+    DrawCoverSprite(&Window, &Background3);
   } else if (gameState == PLAYING) {
+    DrawCoverSprite(&Window, &Background);
     DrawPlate(&Window, &plate, &c);
     DrawPlayer(&Window);
     DrawTextNumber(&Window, &countdown, 0.0f, 0.0f);
   } else if (gameState == RESULT_SCREEN) {
-    DrawTextNumber(&Window, &cleanedPlates, 0.0f, 0.0f);
+    DrawCoverSprite(&Window, &Background);
+    DrawSprite(&Window, &CleanedText);
+    DrawTextNumber(&Window, &cleanedPlates, CleanedText.posX + 600.0f,
+                   CleanedText.posY + 50.0f);
   }
 
   DisplayWindow(&Window);
@@ -133,6 +201,8 @@ void ProcessEvents() {
     case SDL_EVENT_KEY_DOWN:
       if (e.key.key == SDLK_ESCAPE)
         isRunning = 0;
+      else if (e.key.key == SDLK_RETURN && gameState == MAIN_MENU)
+        gameStart = 1;
       break;
     case SDL_EVENT_MOUSE_MOTION:
       mouse.posX = e.motion.x;
@@ -163,4 +233,14 @@ void ProcessEvents() {
   }
 }
 
-void InitGame() {}
+void InitGame() {
+  timerLastTime = (float)SDL_GetTicks() / 1000.0f;
+  c.nCleanables = 5;
+  ResetCleanable(&c);
+  plate.sprite.posX = -600.0f;
+  plate.state = ENTERING;
+  countdown.value = 150;
+  cleanedPlates.value = 0;
+  timerFinished = 0;
+  gameState = PLAYING;
+}

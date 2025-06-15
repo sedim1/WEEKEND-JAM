@@ -24,7 +24,8 @@ typedef struct {
 } Plate;
 
 Plate NewPlate(RenderWindow *Window);
-void PlateUpdate(Plate *plate, Cleanables *c, Mouse *mouse, float dt);
+void PlateUpdate(Plate *plate, Cleanables *c, Mouse *mouse, int *counter,
+                 float dt);
 void DrawPlate(RenderWindow *Window, Plate *plate, Cleanables *c);
 
 #endif // !PLATES_H
