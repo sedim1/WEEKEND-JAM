@@ -64,7 +64,7 @@ int main(int argc, char *argv[]) {
 
 int Init() {
   srand(time(NULL));
-  if (!SDL_Init(SDL_INIT_VIDEO)) {
+  if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
     printf("ERROR::Could Not Init SDL:: %s\n", SDL_GetError());
     return 0;
   }
